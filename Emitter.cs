@@ -20,40 +20,28 @@ namespace WindowsFormsApp1
         public int LifeMin = 20; // минимальное время жизни частицы
         public int LifeMax = 100; // максимальное время жизни частицы
         public int RndSizeDirection = 0;
-
-        public int ParticlesPerTick = 1; // добавил новое поле
-
+        public float GravitationX = 0;
+        public float GravitationY = 1;
+        public int ParticlesPerTick = 1; // части за такт
+        public int ParticlesCount = 10;
         public Color ColorFrom = Color.White; // начальный цвет частицы
         public Color ColorTo = Color.FromArgb(0, Color.Black); // конечный цвет частиц
         Random rnd = new Random();
 
         public List<IImpactPoint> impactPoints = new List<IImpactPoint>();
-
-        public float GravitationX = 0;
-        public float GravitationY = 1;
         public List<Particle> particles = new List<Particle>();
-
-        public int ParticlesCount = 10;
 
         public void UpdateState()
         {
-            
-
-
             int particlesToCreate = ParticlesPerTick; // фиксируем счетчик сколько частиц нам создавать за тик
-
-            foreach (var particle in particles)
-            {
-                
-
-                particle.Life -= 1; // уменьшаю здоровье
+            foreach (var particle in particles.ToList())
+            {                particle.Life -= 1; // уменьшаю здоровье
                                     // если здоровье кончилось
                 if (particle.Life < 0)
                 {
                     particle.Life = 0;
                     if (particlesToCreate > 0)
                     {
-                        //Direction = rnd.Next(RndSizeDirection);
                         /* у нас как сброс частицы равносилен созданию частицы */
                         particlesToCreate -= 1; // поэтому уменьшаем счётчик созданных частиц на 1
                         ResetParticle(particle);
@@ -61,66 +49,48 @@ namespace WindowsFormsApp1
                 }
                 else
                 {
-                    // а это наш старый код
                     particle.X += particle.SpeedX;
                     particle.Y += particle.SpeedY;
 
-                    foreach (var point in impactPoints)
+                    foreach (var point in impactPoints.ToList())
                     {
                         point.ImpactParticle(particle);
                     }
-                    
-                    //particle.SpeedX += GravitationX;
-                    //particle.SpeedY += GravitationY;
-                    
                 }
             }
             
             while (particlesToCreate >= 1)
             {
-                //Direction = rnd.Next(RndSizeDirection);
                 particlesToCreate -= 1;
                 var particle = CreateParticle();
                 ResetParticle(particle);
                 particles.Add(particle);
             }
         }
-        public bool UpdateStateBlackEater()
+        
+        public void Boom(EaterPoints eat) // Метод для симуляции взрыва черной дыры
         {
-            foreach (var eater in impactPoints)
+            // Запомнил положения имиттора
+            int x = this.X;
+            int y = this.Y;
+            int spreading = this.Spreading;
+
+            // Испустил частицы
+            for (int i = 0; i < eat.countShaval; i++)
             {
-                if (eater is EaterPoints)
-                {
-                    if ((eater as EaterPoints).LifeET < 1)
-                    {
-                        int spreading = Spreading;
-                        int x = X;
-                        int y = Y;
-                        X = (eater as EaterPoints).X;
-                        Y = (eater as EaterPoints).Y;
-                        for (int i = 0; i < (eater as EaterPoints).countShaval; i++)
-                        {
-                            var particle = CreateParticle(); // и собственно теперь тут его вызываем
-                            ResetParticle(particle);
-                            particles.Add(particle);
-                            Spreading = 360;
-
-
-                        }
-                        Spreading = spreading;
-                        
-                        X = x;
-                        Y = y;
-                        
-                        impactPoints.Remove(eater);
-                        
-                        return true;
-                    }
-                }
+                var particle = CreateParticle();
+                ResetParticle(particle);
+                particles.Add(particle);
+                Spreading = 360;
+                this.X = eat.X;
+                this.Y = eat.Y;
             }
-            return false;
-        }
 
+            // Вернул емиттор на место
+            this.Spreading = spreading;
+            this.X = x;
+            this.Y = y;
+        }
 
         // добавил новый метод, виртуальным, чтобы переопределять можно было
         public virtual void ResetParticle(Particle particle)
@@ -147,14 +117,11 @@ namespace WindowsFormsApp1
             var particle = new ParticleColorful();
             particle.FromColor = ColorFrom;
             particle.ToColor = ColorTo;
-
             return particle;
         }
 
-        public void Render(Graphics g)
+        public void Render(Graphics g) //собствено рендерим картинку
         {
-            // ну тут так и быть уж сам впишу...
-            // это то же самое что на форме в методе Render
             foreach (var particle in particles)
             {
                 particle.Draw(g);

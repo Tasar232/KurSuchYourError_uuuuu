@@ -11,7 +11,6 @@ namespace WindowsFormsApp1
     {
         public int X; // ну точка же, вот и две координаты
         public int Y;
-
         public abstract void ImpactParticle(Particle particle);
 
         // базовый класс для отрисовки точечки

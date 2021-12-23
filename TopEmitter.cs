@@ -9,7 +9,6 @@ namespace WindowsFormsApp1
     public class TopEmitter : Emitter
     {
         public int Width; // длина экрана
-
         public override void ResetParticle(Particle particle)
         {
             base.ResetParticle(particle); // вызываем базовый сброс частицы, там жизнь переопределяется и все такое

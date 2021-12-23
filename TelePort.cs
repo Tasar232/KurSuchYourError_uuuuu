@@ -46,18 +46,6 @@ namespace WindowsFormsApp1
                 {
                     particle.X = Xbro + rnd.Next(50);
                     particle.Y = Ybro -30 + rnd.Next(60);
-
-                    //var direction = DerectionXY;
-                    //
-                    ////var speed =  particle.Speed;
-                    //var speed = Math.Sqrt(particle.SpeedX* particle.SpeedX + particle.SpeedY* particle.SpeedY);
-                    //
-                    //particle.SpeedX = (float)(Math.Cos(direction / 180 * Math.PI) * speed);
-                    //particle.SpeedY = -(float)(Math.Sin(direction / 180 * Math.PI) * speed);
-                   // var m = new Matrix();
-                    //m.Rotate(DerectionXY);
-                    //particle.SpeedX = m.TransformPoints(X) ;
-                    //particle.SpeedY
                 }
             }
 
@@ -84,8 +72,6 @@ namespace WindowsFormsApp1
                         Radius
                     );
             }
-            
         }
-
     }
 }

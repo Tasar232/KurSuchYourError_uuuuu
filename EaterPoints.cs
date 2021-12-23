@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace WindowsFormsApp1
 {
-    class EaterPoints : IImpactPoint
+    public class EaterPoints : IImpactPoint
     {
         public int countShaval = 0;
         public static Random rand = new Random();
@@ -17,6 +17,7 @@ namespace WindowsFormsApp1
         public int Power = 100;
         public int LifeET = 2000;
         public List<IImpactPoint> impactPoints = new List<IImpactPoint>();
+        public Action<EaterPoints> onLifeEnd; // Событие взрыва черной дыры
 
         public EaterPoints()
         {
@@ -25,26 +26,22 @@ namespace WindowsFormsApp1
         }
         public override void ImpactParticle(Particle particle)
         {
-
             float gX = X - particle.X;
             float gY = Y - particle.Y;
             float r2 = (float)Math.Max(100, gX * gX + gY * gY);
-            // particle.SpeedX += gX* Power / r2; // тут минусики вместо плюсов
-            //particle.SpeedY += gY* Power / r2; // и тут
+
             double r = Math.Sqrt(gX * gX + gY * gY);
             if (r + particle.Radius < 50)
             {
                 particle.Life = 0;
                 countShaval++;
                 LifeET--;
-
-                //particle.SpeedX += gX * Power / r2; // тут минусики вместо плюсов
-                //particle.SpeedY += gY* Power / r2; // и тут
+                if (LifeET <= 0)
+                {
+                    onLifeEnd.Invoke(this);
+                }
             }
-
         }
-
-        
 
         public override void Render(Graphics g)
         {
@@ -85,23 +82,5 @@ namespace WindowsFormsApp1
             stringFormat
         );
         }
-        //public virtual void Draw(Graphics g)
-        //{
-        //    // рассчитываем коэффициент прозрачности по шкале от 0 до 1.0
-        //    //float k = Math.Min(1f, Life / 100);
-        //    // рассчитываем значение альфа канала в шкале от 0 до 255
-        //    // по аналогии с RGB, он используется для задания прозрачности
-        //    //int alpha = (int)(k * 255);
-        //
-        //    // создаем цвет из уже существующего, но привязываем к нему еще и значение альфа канала
-        //    var color = Color.Blue;
-        //    var b = new SolidBrush(color);
-        //
-        //    // остальное все так же
-        //    g.FillEllipse(b, X - Radius, Y - Radius, Radius * 2, Radius * 2);
-        //
-        //    b.Dispose();
-        //}
-
     }
 }

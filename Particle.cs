@@ -12,7 +12,6 @@ namespace WindowsFormsApp1
         public int Radius; // радуис частицы
         public float X; // X координата положения частицы в пространстве
         public float Y; // Y координата положения частицы в пространстве
-
         public float SpeedX; // скорость перемещения по оси X
         public float SpeedY; // скорость перемещения по оси Y
         public float Speed;
@@ -37,9 +36,6 @@ namespace WindowsFormsApp1
             Life = 20 + rand.Next(80);
         }
 
-       
-
-
         public virtual void Draw(Graphics g)
         {
             // рассчитываем коэффициент прозрачности по шкале от 0 до 1.0
@@ -54,7 +50,6 @@ namespace WindowsFormsApp1
 
             // остальное все так же
             g.FillEllipse(b, X - Radius, Y - Radius, Radius * 2, Radius * 2);
-
             b.Dispose();
         }
     }
@@ -90,7 +85,6 @@ namespace WindowsFormsApp1
             var b = new SolidBrush(color);
 
             g.FillEllipse(b, X - Radius, Y - Radius, Radius * 2, Radius * 2);
-
             b.Dispose();
         }
     }
